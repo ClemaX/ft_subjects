@@ -5,18 +5,30 @@ UNAME=$(uname -s)
 PROFILE_DIR_LINUX="$HOME/.mozilla/firefox"
 PROFILE_DIR_DARWIN="$HOME/Library/Application Support/Firefox/Profiles"
 
+profiles_linux()
+{
+	PROFILE_DIR="$PROFILE_DIR_LINUX"REPLY
+
+	PROFILES=($(grep '^Path=.*$' "$PROFILE_DIR/profiles.ini" | cut -d'=' -f2))
+}
+
+profiles_darwin()
+{
+	PROFILE_DIR="$PROFILE_DIR_DARWIN"
+
+	pushd "$PROFILE_DIR" >/dev/null
+		PROFILES=($(find . -type d -mindepth 1 -maxdepth 1 | cut -d'/' -f2-))
+	popd >/dev/null
+}
+
 case "$UNAME" in
-	Linux*)		PROFILE_DIR="$PROFILE_DIR_LINUX";;
-	Darwin*)	PROFILE_DIR="$PROFILE_DIR_DARWIN";;
+	Linux*)		profiles_linux;;
+	Darwin*)	profiles_darwin;;
 	*)			echo "Unknown system: '$UNAME'!" >&2 && exit 1;;
 esac
 
-PROFILE_INDEX="$PROFILE_DIR/profiles.ini"
-
-PROFILES=$(grep '^Path=.*$' "$PROFILE_INDEX" | cut -d'=' -f2)
-
 PS3='Select profile, or 0 to exit: '
-select PROFILE in $PROFILES
+select PROFILE in "${PROFILES[@]}"
 do
 	if [[ $REPLY == "0" ]]
 	then

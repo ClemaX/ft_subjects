@@ -1,18 +1,25 @@
 #!/usr/bin/env python
-import os
-import sys
+from sys import argv, platform, exit
+from os import environ, path, makedirs
 import json
 
 
-if len(sys.argv) != 2:
-	sys.exit(f'Usage: {sys.argv[0]} TERM')
+if len(argv) != 2:
+    exit(f"Usage: {argv[0]} TERM")
 
-term = sys.argv[1]
+term = argv[1]
 
-# TODO: Handle macos and XDG_DATA_DIR
-cache_dir = os.path.expanduser("~/.cache/subjects")
+if platform == "linux" or platform == "linux2":
+    xdg_data_dir = environ['XDG_CACHE_DIR'] or path.expanduser("~/.cache/")
+    cache_dir = path.join(xdg_data_dir, subjects)
+elif platform == "darwin":
+    cache_dir = path.expanduser("~/Library/Caches/fr.42lyon.chamada.subjects")
+    if not path.exists(cache_dir):
+        makedirs(cache_dir)
+else:
+    exit("This platform is not supported!")
 
-with open(os.path.join(cache_dir, 'db.json')) as db:
+with open(path.join(cache_dir, 'db.json')) as db:
 	subjects = json.load(db)
 
 for name, url in subjects.items():

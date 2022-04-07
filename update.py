@@ -1,12 +1,20 @@
 #!/usr/bin/env python
+from sys import platform, exit
 import os
 import time
 import requests
 import json
 from bs4 import BeautifulSoup
 
-# TODO: Handle macos and XDG_DATA_DIR
-cache_dir = os.path.expanduser("~/.cache/subjects")
+if platform == "linux" or platform == "linux2":
+    xdg_data_dir = os.environ['XDG_CACHE_DIR'] or os.path.expanduser("~/.cache/")
+    cache_dir = os.path.join(xdg_data_dir, subjects)
+elif platform == "darwin":
+    cache_dir = os.path.expanduser("~/Library/Caches/fr.42lyon.chamada.subjects")
+    if not os.path.exists(cache_dir):
+        os.makedirs(cache_dir)
+else:
+    exit("This platform is not supported!")
 
 with open(os.path.join(cache_dir, 'token')) as token_file:
 	token = token_file.readline()
