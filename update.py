@@ -38,4 +38,4 @@ for project in projects:
 print(subjects)
 
 with open(os.path.join(cache_dir, 'db.json'), 'w') as db:
-	db.write(json.dumps(subjects))
+	json.dump(subjects, db)
