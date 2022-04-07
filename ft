@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+print_usage()
+{
+	echo "Usage: $0 command [arguments]
+
+Where command is one of:
+update:	Sync the subject database.
+search: Find a project in the subject database."
+}
+
+case "$1" in
+	update	)	shift; python3 "$DIR/update.py" "$@";;
+	search	)	shift; python3 "$DIR/search.py" "$@";;
+	*)			print_usage >&2; exit 1;;
+esac
