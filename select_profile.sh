@@ -7,7 +7,7 @@ PROFILE_DIR_DARWIN="$HOME/Library/Application Support/Firefox/Profiles"
 
 profiles_linux()
 {
-	PROFILE_DIR="$PROFILE_DIR_LINUX"REPLY
+	PROFILE_DIR="$PROFILE_DIR_LINUX"
 
 	PROFILES=($(grep '^Path=.*$' "$PROFILE_DIR/profiles.ini" | cut -d'=' -f2))
 }
